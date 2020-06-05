@@ -1,0 +1,45 @@
+{
+  "name": "react-native-minkasu2fa-webview",
+  "title": "React Native Minkasu2fa Webview",
+  "version": "1.0.0",
+  "description": "React Native Minkasu WebView for iOS and Android",
+  "main": "index.js",
+  "homepage": "https://github.com/mk-it-admin/react-native-minkasu2fa-webview#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-minkasu",
+    "react-native-minkasu2fa",
+    "react-native-minkasu2fa webview"
+  ],
+  "author": {
+    "name": "Minkasu",
+    "email": "npm@minkasu.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mk-it-admin/react-native-minkasu2fa-webview.git"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-native": "^0.62.2",
+    "react-native-webview":"^9.4.0"
+  },
+  "devDependencies": {
+    "react": "^16.13.0",
+    "react-native": "^0.62.2"
+  },
+  "files": [
+    "README.md",
+    "android",
+    "ios",
+    "lib",
+    "index.js",
+    "react-native-minkasu2fa-webview.podspec"
+  ]
+}
