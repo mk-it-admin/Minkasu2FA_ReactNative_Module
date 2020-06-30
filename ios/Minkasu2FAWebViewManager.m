@@ -20,9 +20,57 @@
 
 @end
 
+@interface RNCWebViewManager ()
+
+-(void) postMessage:(nonnull NSNumber *)reactTag message:(NSString *)message;
+-(void) injectJavaScript:(nonnull NSNumber *)reactTag script:(NSString *)script;
+-(void) goBack:(nonnull NSNumber *)reactTag;
+-(void) goForward:(nonnull NSNumber *)reactTag;
+-(void) reload:(nonnull NSNumber *)reactTag;
+-(void) stopLoading:(nonnull NSNumber *)reactTag;
+-(void) startLoadWithResult:(BOOL)result lockIdentifier:(NSInteger)lockIdentifier;
+
+@end
+
 @implementation Minkasu2FAWebViewManager
 
 RCT_EXPORT_MODULE()
+
+RCT_EXPORT_METHOD(postMessage:(nonnull NSNumber *)reactTag message:(NSString *)message)
+{
+  [super postMessage:reactTag message:message];
+}
+
+RCT_EXPORT_METHOD(injectJavaScript:(nonnull NSNumber *)reactTag script:(NSString *)script)
+{
+  [super injectJavaScript:reactTag script:script];
+}
+
+RCT_EXPORT_METHOD(goBack:(nonnull NSNumber *)reactTag)
+{
+  [super goBack:reactTag];
+}
+
+RCT_EXPORT_METHOD(goForward:(nonnull NSNumber *)reactTag)
+{
+  [super goForward:reactTag];
+}
+
+RCT_EXPORT_METHOD(reload:(nonnull NSNumber *)reactTag)
+{
+  [super reload:reactTag];
+}
+
+RCT_EXPORT_METHOD(stopLoading:(nonnull NSNumber *)reactTag)
+{
+  [super stopLoading:reactTag];
+}
+
+RCT_EXPORT_METHOD(startLoadWithResult:(BOOL)result lockIdentifier:(NSInteger)lockIdentifier)
+{
+  [super startLoadWithResult:result lockIdentifier:lockIdentifier];
+}
+
 RCT_EXPORT_VIEW_PROPERTY(onMinkasu2FAInit, RCTDirectEventBlock)
 
 - (NSDictionary *)constantsToExport{

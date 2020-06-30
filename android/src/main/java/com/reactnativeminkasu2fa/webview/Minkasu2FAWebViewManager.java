@@ -56,6 +56,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
     private static final String CUSTOMER_ORDER_INFO = "customer_order_info";
     private static final String ORDER_ID = "order_id";
     private static final String SDK_MODE_SANDBOX = "sdk_mode_sandbox";
+    private static final String ENABLE_BANK_APP_NB = "enable_bank_app_nb";
     private static final String SKIP_INIT = "skip_init";
 
     private static final int COMMAND_CONFIG_MINKASU2FA = 24680;
@@ -115,6 +116,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
         export.put("CUSTOMER_ORDER_INFO", CUSTOMER_ORDER_INFO);
         export.put("CUSTOMER_ORDER_ID", ORDER_ID);
         export.put("SDK_MODE_SANDBOX", SDK_MODE_SANDBOX);
+        export.put("ENABLE_BANK_APP_NB", ENABLE_BANK_APP_NB);
         export.put("STATUS", STATUS);
         export.put("STATUS_SUCCESS", SUCCESS);
         export.put("STATUS_FAILURE", FAILURE);
@@ -208,7 +210,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
                     sdkMode = Config.SANDBOX_MODE;
                 }
                 configObj.setSDKMode(sdkMode);
-                configObj.setEnableBankAppForNetBanking(true);
+                configObj.setEnableBankAppForNetBanking(configMap.hasKey(ENABLE_BANK_APP_NB) && configMap.getBoolean(ENABLE_BANK_APP_NB));
                 configObj.setOrderInfo(order);
                 try {
                     getMinkasu2FAModule((ReactContext) view.getContext()).initSDK(view, configObj);
