@@ -40,4 +40,4 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
-react-native-minkasu2fa-webview-1.0.0.tgz
+react-native-minkasu2fa-webview-*.tgz

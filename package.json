@@ -1,7 +1,7 @@
 {
   "name": "react-native-minkasu2fa-webview",
   "title": "React Native Minkasu2fa Webview",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "React Native Minkasu WebView for iOS and Android",
   "main": "index.js",
   "homepage": "https://github.com/mk-it-admin/react-native-minkasu2fa-webview#readme",
@@ -27,12 +27,12 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-native": "^0.62.2",
-    "react-native-webview":"^9.4.0"
+    "react-native": "^0.63.3",
+    "react-native-webview": "^10.10.0"
   },
   "devDependencies": {
-    "react": "^16.13.0",
-    "react-native": "^0.62.2"
+    "react": "^16.13.1",
+    "react-native": "^0.63.3"
   },
   "files": [
     "README.md",

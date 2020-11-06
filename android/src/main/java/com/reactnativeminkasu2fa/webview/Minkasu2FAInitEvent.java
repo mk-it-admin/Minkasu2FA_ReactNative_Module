@@ -8,7 +8,7 @@ class Minkasu2FAInitEvent extends Event<Minkasu2FAInitEvent> {
 
     static final String EVENT_NAME = "minkasu2FAInitEvent";
 
-    private WritableMap mParams;
+    private final WritableMap mParams;
 
     Minkasu2FAInitEvent(int viewTag, WritableMap params) {
         super(viewTag);

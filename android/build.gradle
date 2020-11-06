@@ -1,7 +1,7 @@
-def DEFAULT_COMPILE_SDK_VERSION = 29
+def DEFAULT_COMPILE_SDK_VERSION = 30
 def DEFAULT_BUILD_TOOLS_VERSION = '29.0.3'
-def DEFAULT_MIN_SDK_VERSION = 17
-def DEFAULT_TARGET_SDK_VERSION = 29
+def DEFAULT_MIN_SDK_VERSION = 21
+def DEFAULT_TARGET_SDK_VERSION = 30
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -55,7 +55,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     api project(path: ':react-native-webview')
-    implementation 'com.minkasu.android.twofa:minkasu-2fa:2.0.2'
+    implementation 'com.minkasu.android.twofa:minkasu-2fa:2.1.0'
 }
 
 def configureReactNativePom(def pom) {
