@@ -14,6 +14,7 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.facebook.react.uimanager.events.Event;
 import com.minkasu.android.twofa.exceptions.MissingDataException;
 import com.minkasu.android.twofa.exceptions.MissingPermissionExceptions;
 import com.minkasu.android.twofa.exceptions.PlatformNotSupportedException;
@@ -233,7 +234,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
             }
             eventData.putString(INIT_TYPE, initType);
             eventData.putString(STATUS, status);
-            dispatchEvent(view, new Minkasu2FAInitEvent(view.getId(), eventData));
+            ((Minkasu2FAWebView) view).dispatchEvent(view, new Minkasu2FAInitEvent(view.getId(), eventData));
         }
     }
 
@@ -243,6 +244,11 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
     private static class Minkasu2FAWebView extends RNCWebView {
         public Minkasu2FAWebView(ThemedReactContext reactContext) {
             super(reactContext);
+        }
+
+        @Override
+        protected void dispatchEvent(WebView webView, Event event) {
+            super.dispatchEvent(webView, event);
         }
     }
 }

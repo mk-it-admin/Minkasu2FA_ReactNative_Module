@@ -32,7 +32,10 @@
 
 @end
 
-@implementation Minkasu2FAWebViewManager
+@implementation Minkasu2FAWebViewManager{
+  Minkasu2FAConfig *minkasuConfig;
+  Minkasu2FAWebView *mkWebView;
+}
 
 RCT_EXPORT_MODULE()
 
@@ -125,22 +128,31 @@ RCT_EXPORT_VIEW_PROPERTY(onMinkasu2FAInit, RCTDirectEventBlock)
 RCT_CUSTOM_VIEW_PROPERTY(minkasu2FAConfig, NSDictionary, Minkasu2FAWebView
                          ) {
   view.minkasu2FAConfig = json == nil? nil:[RCTConvert NSDictionary: json];
-  Minkasu2FAConfig *config = [self createConfig:view.minkasu2FAConfig];
-  dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *status = STATUS_SUCCESS;
-    if (self->_isSkipInit) {
-      view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE });
-    }else{
-      @try {
-        [Minkasu2FA initWithWKWebView:view.webView andConfiguration:config inViewController:nil];
-        view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE});
+  mkWebView = view;
+  if(view.webView){
+    [self onPayByAttribute];
+  }else{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPayByAttribute) name:@"minkasuPayByAttribute" object:nil];
+  }
+}
+
+-(void)onPayByAttribute{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"minkasuPayByAttribute" object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      Minkasu2FAConfig *config = [self createConfig:self->mkWebView.minkasu2FAConfig];
+      NSString *status = STATUS_SUCCESS;
+      if (self.isSkipInit) {
+        self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE });
+      }else{
+        @try {
+          [Minkasu2FA initWithWKWebView:self->mkWebView.webView andConfiguration:config inViewController:nil];
+          self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE });
+        } @catch (NSException *exception) {
+          status = STATUS_FAILURE;
+          self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE,@"errorMessage":exception.reason,@"errorCode":exception.name});
+        }
       }
-      @catch (NSException *exception) {
-        status = STATUS_FAILURE;
-        view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_ATTRIBUTE,@"errorMessage":exception.reason,@"errorCode":exception.name});
-      }
-    }
-  });
+    });
 }
 
 RCT_EXPORT_METHOD(initMinkasu2FA:(nonnull NSNumber *)reactTag minkasu2FAConfig:(NSDictionary*)minkasu2FAConfig)
@@ -150,23 +162,34 @@ RCT_EXPORT_METHOD(initMinkasu2FA:(nonnull NSNumber *)reactTag minkasu2FAConfig:(
     if (![view isKindOfClass:[Minkasu2FAWebView class]]) {
       RCTLogError(@"Invalid view returned from registry, expecting RNCWebView, got: %@", view);
     } else {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        Minkasu2FAConfig *config = [self createConfig:minkasu2FAConfig];
-        NSString *status = STATUS_SUCCESS;
-        if (self.isSkipInit) {
-          view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD });
-        }else{
-          @try {
-            [Minkasu2FA initWithWKWebView:view.webView andConfiguration:config inViewController:nil];
-            view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD });
-          } @catch (NSException *exception) {
-            status = STATUS_FAILURE;
-            view.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD,@"errorMessage":exception.reason,@"errorCode":exception.name});
-          }
-        }
-      });
+      Minkasu2FAConfig *config = [self createConfig:minkasu2FAConfig];
+      self->minkasuConfig = config;
+      self->mkWebView = view;
+      if(view.webView){
+        [self onPayByMethod];
+      }else{
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPayByMethod) name:@"minkasuPayByMethod" object:nil];
+      }
     }
   }];
+}
+
+-(void) onPayByMethod{
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:@"minkasuPayByMethod" object:nil];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *status = STATUS_SUCCESS;
+    if (self.isSkipInit) {
+      self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD });
+    }else{
+      @try {
+        [Minkasu2FA initWithWKWebView:self->mkWebView.webView andConfiguration:self->minkasuConfig inViewController:nil];
+        self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD });
+      } @catch (NSException *exception) {
+        status = STATUS_FAILURE;
+        self->mkWebView.onMinkasu2FAInit(@{@"status":status,@"initType":INIT_BY_METHOD,@"errorMessage":exception.reason,@"errorCode":exception.name});
+      }
+    }
+  });
 }
 
 -(Minkasu2FAConfig*)createConfig:(NSDictionary*)minkasu2FAConfig{
