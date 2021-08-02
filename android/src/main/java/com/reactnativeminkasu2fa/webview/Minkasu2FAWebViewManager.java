@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
@@ -22,9 +23,11 @@ import com.minkasu.android.twofa.model.Address;
 import com.minkasu.android.twofa.model.Config;
 import com.minkasu.android.twofa.model.CustomerInfo;
 import com.minkasu.android.twofa.model.OrderInfo;
+import com.minkasu.android.twofa.sdk.Minkasu2faSDK;
 import com.reactnativecommunity.webview.RNCWebViewManager;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 @ReactModule(name = Minkasu2FAWebViewManager.REACT_CLASS)
@@ -68,7 +71,9 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
 
     @Override
     protected RNCWebView createRNCWebViewInstance(ThemedReactContext reactContext) {
-        return new Minkasu2FAWebView(reactContext);
+        Minkasu2FAWebView webView = new Minkasu2FAWebView(reactContext);
+        Minkasu2faSDK.setMinkasu2faUserAgent(webView);
+        return webView;
     }
 
     @NonNull
@@ -154,6 +159,28 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
         }
     }
 
+    @ReactProp(name = "source")
+    public void setSource(WebView view, @Nullable ReadableMap source) {
+        super.setSource(view, source);
+        if (source != null && source.hasKey("headers")) {
+            ReadableMap headers = source.getMap("headers");
+            ReadableMapKeySetIterator iter = headers.keySetIterator();
+            while (iter.hasNextKey()) {
+                String key = iter.nextKey();
+                if ("user-agent".equals(key.toLowerCase(Locale.ENGLISH))) {
+                    Minkasu2faSDK.setMinkasu2faUserAgent(view);
+                    break;
+                }
+            }
+        }
+    }
+
+    @ReactProp(name = "userAgent")
+    public void setUserAgent(WebView view, @Nullable String userAgent) {
+        super.setUserAgent(view, userAgent);
+        Minkasu2faSDK.setMinkasu2faUserAgent(view);
+    }
+    
     @ReactProp(name = "minkasu2FAConfig")
     public void setMinkasu2FAConfig(WebView view, ReadableMap configMap) {
         initSDK(view, configMap, INIT_BY_PROPERTY);
@@ -169,8 +196,8 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
             String status = SUCCESS;
             String errorMessage = null;
             CustomerInfo customer = new CustomerInfo();
-            boolean isSkipInit = configMap.hasKey(SKIP_INIT)&&configMap.getBoolean(SKIP_INIT);
-            if(!isSkipInit){
+            boolean isSkipInit = configMap.hasKey(SKIP_INIT) && configMap.getBoolean(SKIP_INIT);
+            if (!isSkipInit) {
                 if (configMap.hasKey(CUSTOMER_INFO)) {
                     ReadableMap customerInfo = configMap.getMap(CUSTOMER_INFO);
                     if (customerInfo != null) {
@@ -213,6 +240,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
                 configObj.setSDKMode(sdkMode);
                 configObj.setEnableBankAppForNetBanking(configMap.hasKey(ENABLE_BANK_APP_NB) && configMap.getBoolean(ENABLE_BANK_APP_NB));
                 configObj.setOrderInfo(order);
+                configObj.setDisableMinkasu2faUserAgent(true);
                 try {
                     getMinkasu2FAModule((ReactContext) view.getContext()).initSDK(view, configObj);
                 } catch (MissingDataException e) {

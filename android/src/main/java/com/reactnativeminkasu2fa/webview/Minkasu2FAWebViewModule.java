@@ -26,8 +26,8 @@ public class Minkasu2FAWebViewModule extends RNCWebViewModule {
     static final String MODULE_NAME = "Minkasu2FAWebViewModule";
 
     private static final String CHANGE_PIN = "changePin";
-    private static final String ENABLE_BIOMETRIC = "enableBiometric";
-    private static final String DISABLE_BIOMETRIC = "disableBiometric";
+    private static final String ENABLE_BIOMETRICS = "enableBiometrics";
+    private static final String DISABLE_BIOMETRICS = "disableBiometrics";
 
     Minkasu2FAWebViewModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -47,25 +47,25 @@ public class Minkasu2FAWebViewModule extends RNCWebViewModule {
             exportConstant = new HashMap<>();
         }
         exportConstant.put("CHANGE_PIN", CHANGE_PIN);
-        exportConstant.put("ENABLE_BIOMETRIC", ENABLE_BIOMETRIC);
-        exportConstant.put("DISABLE_BIOMETRIC", DISABLE_BIOMETRIC);
+        exportConstant.put("ENABLE_BIOMETRICS", ENABLE_BIOMETRICS);
+        exportConstant.put("DISABLE_BIOMETRICS", DISABLE_BIOMETRICS);
         return exportConstant;
     }
 
     @ReactMethod
-    public void getMinkasu2FAOperationTypes(Promise promise) {
-        List<Minkasu2faOperationType> operationTypes = Minkasu2faSDK.getMinkasu2faOperationTypes(getCurrentActivity());
+    public void getAvailableMinkasu2faOperations(Promise promise) {
+        List<Minkasu2faOperationType> operationTypes = Minkasu2faSDK.getAvailableMinkasu2faOperations(getCurrentActivity());
         WritableMap operationTypeMap = Arguments.createMap();
         for (Minkasu2faOperationType operationType : operationTypes) {
             switch (operationType) {
                 case CHANGE_PAYPIN:
                     operationTypeMap.putString(CHANGE_PIN, operationType.getValue());
                     break;
-                case ENABLE_FINGERPRINT:
-                    operationTypeMap.putString(ENABLE_BIOMETRIC, operationType.getValue());
+                case ENABLE_BIOMETRICS:
+                    operationTypeMap.putString(ENABLE_BIOMETRICS, operationType.getValue());
                     break;
-                case DISABLE_FINGERPRINT:
-                    operationTypeMap.putString(DISABLE_BIOMETRIC, operationType.getValue());
+                case DISABLE_BIOMETRICS:
+                    operationTypeMap.putString(DISABLE_BIOMETRICS, operationType.getValue());
                     break;
             }
         }
@@ -79,7 +79,7 @@ public class Minkasu2FAWebViewModule extends RNCWebViewModule {
             return;
         }
         if (getCurrentActivity() != null) {
-            List<Minkasu2faOperationType> operationTypes = Minkasu2faSDK.getMinkasu2faOperationTypes(getCurrentActivity());
+            List<Minkasu2faOperationType> operationTypes = Minkasu2faSDK.getAvailableMinkasu2faOperations(getCurrentActivity());
             Minkasu2faOperationType operationType = null;
             if (operationTypeStr != null && operationTypeStr.length() > 0) {
                 for (Minkasu2faOperationType opType : operationTypes) {

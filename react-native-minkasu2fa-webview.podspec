@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
 
   s.dependency "React"
   s.dependency "react-native-webview"
-  s.dependency "Minkasu2FA", "2.2.0"
+  s.dependency "Minkasu2FA", "2.3.1"
   # ...
   # s.dependency "..."
 end

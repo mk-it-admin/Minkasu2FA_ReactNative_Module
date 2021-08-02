@@ -48,7 +48,7 @@
 #define IOS_THEME_OBJ @"ios_theme_obj"
 
 #define CHANGE_PIN @"changePin"
-#define ENABLE_BIOMETRIC @"enableBiometric"
-#define DISABLE_BIOMETRIC @"disableBiometric"
+#define ENABLE_BIOMETRICS @"enableBiometrics"
+#define DISABLE_BIOMETRICS @"disableBiometrics"
 
 #endif /* Constants_h */

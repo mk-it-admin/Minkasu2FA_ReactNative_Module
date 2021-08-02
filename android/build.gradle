@@ -56,7 +56,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     api project(path: ':react-native-webview')
-    implementation 'com.minkasu:minkasu-2fa:2.1.2'
+    implementation 'com.minkasu:minkasu-2fa:2.2.1'
 }
 
 def configureReactNativePom(def pom) {

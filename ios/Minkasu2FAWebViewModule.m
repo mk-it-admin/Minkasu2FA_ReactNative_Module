@@ -17,13 +17,13 @@ RCT_EXPORT_MODULE()
 - (NSDictionary *)constantsToExport{
     
     NSDictionary *export = @{@"CHANGE_PIN":CHANGE_PIN,
-                             @"ENABLE_BIOMETRIC":ENABLE_BIOMETRIC,
-                             @"DISABLE_BIOMETRIC":DISABLE_BIOMETRIC
+                             @"ENABLE_BIOMETRICS":ENABLE_BIOMETRICS,
+                             @"DISABLE_BIOMETRICS":DISABLE_BIOMETRICS
     };
     return export;
 }
 
-RCT_REMAP_METHOD(getMinkasu2FAOperationTypes,
+RCT_REMAP_METHOD(getAvailableMinkasu2faOperations,
                  resolver: (RCTPromiseResolveBlock)resolve
                  rejecter: (RCTPromiseRejectBlock)reject)
 {
@@ -34,9 +34,9 @@ RCT_REMAP_METHOD(getMinkasu2FAOperationTypes,
             if(operation.intValue == MINKASU2FA_CHANGE_PAYPIN) {
                 [operations setObject:@"CHANGE PIN" forKey:CHANGE_PIN];
             }else if(operation.intValue == MINKASU2FA_ENABLE_BIOMETRY) {
-                [operations setObject:@"ENABLE BIOMETRIC" forKey:ENABLE_BIOMETRIC];
+                [operations setObject:@"ENABLE BIOMETRICS" forKey:ENABLE_BIOMETRICS];
             } else if(operation.intValue == MINKASU2FA_DISABLE_BIOMETRY) {
-                [operations setObject:@"DISABLE BIOMETRIC" forKey:DISABLE_BIOMETRIC];
+                [operations setObject:@"DISABLE BIOMETRICS" forKey:DISABLE_BIOMETRICS];
             }
         }
     }
@@ -85,11 +85,11 @@ RCT_REMAP_METHOD(performMinkasu2FAOperation,
             dispatch_async(dispatch_get_main_queue(), ^{
                 [Minkasu2FA performMinkasu2FAOperation:MINKASU2FA_CHANGE_PAYPIN merchantCustomerId:merchantCustomerId customTheme:mkcolorTheme];
             });
-        }else if([operationTypeStr isEqualToString:@"ENABLE BIOMETRIC"]){
+        }else if([operationTypeStr isEqualToString:@"ENABLE BIOMETRICS"]){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [Minkasu2FA performMinkasu2FAOperation:MINKASU2FA_ENABLE_BIOMETRY merchantCustomerId:merchantCustomerId customTheme:mkcolorTheme];
             });
-        }else if ([operationTypeStr isEqualToString:@"DISABLE BIOMETRIC"]){
+        }else if ([operationTypeStr isEqualToString:@"DISABLE BIOMETRICS"]){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [Minkasu2FA performMinkasu2FAOperation:MINKASU2FA_DISABLE_BIOMETRY merchantCustomerId:merchantCustomerId customTheme:mkcolorTheme];
             });
