@@ -201,7 +201,8 @@ RCT_EXPORT_METHOD(startLoadWithResult:(BOOL)result lockIdentifier:(NSInteger)loc
                              @"DARK_MODE_BUTTON_BACKGROUND_COLOR":DARK_MODE_BUTTON_BACKGROUND_COLOR,
                              @"DARK_MODE_BUTTON_TEXT_COLOR":DARK_MODE_BUTTON_TEXT_COLOR,
                              @"SUPPORT_DARK_MODE":SUPPORT_DARK_MODE,
-                             @"IOS_THEME_OBJ":IOS_THEME_OBJ
+                             @"IOS_THEME_OBJ":IOS_THEME_OBJ,
+                             @"MINKASU_2FA_USER_AGENT":[Minkasu2FA getMinkasu2faUserAgent]
     };
     return export;
 }

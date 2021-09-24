@@ -9,7 +9,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
@@ -27,6 +26,7 @@ import com.minkasu.android.twofa.sdk.Minkasu2faSDK;
 import com.reactnativecommunity.webview.RNCWebViewManager;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -67,6 +67,11 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
 
     private static Minkasu2FAWebViewModule getMinkasu2FAModule(ReactContext reactContext) {
         return reactContext.getNativeModule(Minkasu2FAWebViewModule.class);
+    }
+    
+    private static String appendMinkasu2faUserAgent(String existingAgent) {
+        String userAgent = Minkasu2faSDK.removeDuplicatesFromUserAgent(existingAgent);
+        return userAgent + " " + Minkasu2faSDK.getMinkasu2faUserAgent();
     }
 
     @Override
@@ -132,6 +137,7 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
         export.put("INIT_BY_METHOD", INIT_BY_METHOD);
         export.put("INIT_BY_ATTRIBUTE", INIT_BY_PROPERTY);
         export.put("SKIP_INIT", SKIP_INIT);
+        export.put("MINKASU_2FA_USER_AGENT", Minkasu2faSDK.getMinkasu2faUserAgent());
         return export;
     }
 
@@ -161,26 +167,37 @@ public class Minkasu2FAWebViewManager extends RNCWebViewManager {
 
     @ReactProp(name = "source")
     public void setSource(WebView view, @Nullable ReadableMap source) {
-        super.setSource(view, source);
         if (source != null && source.hasKey("headers")) {
-            ReadableMap headers = source.getMap("headers");
-            ReadableMapKeySetIterator iter = headers.keySetIterator();
-            while (iter.hasNextKey()) {
-                String key = iter.nextKey();
-                if ("user-agent".equals(key.toLowerCase(Locale.ENGLISH))) {
-                    Minkasu2faSDK.setMinkasu2faUserAgent(view);
-                    break;
+            HashMap<String, Object> sourceMap = source.toHashMap();
+            L1:
+            for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
+                if (entry.getKey().equals("headers")) {
+                    Object value = entry.getValue();
+                    if (value instanceof Map) {
+                        HashMap<String, Object> headerMap = (HashMap<String, Object>) entry.getValue();
+                        if (headerMap != null) {
+                            for (Map.Entry<String, Object> headerEntry : headerMap.entrySet()) {
+                                if ("user-agent".equals(headerEntry.getKey().toLowerCase(Locale.ENGLISH))) {
+                                    headerEntry.setValue(appendMinkasu2faUserAgent((String) headerEntry.getValue()));
+                                    break L1;
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            WritableMap map = Arguments.makeNativeMap(sourceMap);
+            super.setSource(view, map);
+        } else {
+            super.setSource(view, source);
         }
     }
 
     @ReactProp(name = "userAgent")
     public void setUserAgent(WebView view, @Nullable String userAgent) {
-        super.setUserAgent(view, userAgent);
-        Minkasu2faSDK.setMinkasu2faUserAgent(view);
+        super.setUserAgent(view, appendMinkasu2faUserAgent(userAgent));
     }
-    
+
     @ReactProp(name = "minkasu2FAConfig")
     public void setMinkasu2FAConfig(WebView view, ReadableMap configMap) {
         initSDK(view, configMap, INIT_BY_PROPERTY);
