@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 
 def DEFAULT_COMPILE_SDK_VERSION = 30
-def DEFAULT_BUILD_TOOLS_VERSION = '29.0.3'
+def DEFAULT_BUILD_TOOLS_VERSION = '30.0.2'
 def DEFAULT_MIN_SDK_VERSION = 21
 def DEFAULT_TARGET_SDK_VERSION = 30
 
@@ -19,7 +19,7 @@ buildscript {
             mavenCentral()
         }
         dependencies {
-            classpath 'com.android.tools.build:gradle:3.6.4'
+            classpath 'com.android.tools.build:gradle:4.2.2'
         }
     }
 }
@@ -56,7 +56,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     api project(path: ':react-native-webview')
-    implementation 'com.minkasu:minkasu-2fa:2.2.2'
+    implementation 'com.minkasu:minkasu-2fa:2.2.3'
 }
 
 def configureReactNativePom(def pom) {
